@@ -1,0 +1,22 @@
+task :  Vessel_Segmentation
+classes :  2
+p_size :  [212, 212, 96]
+in_size :  [192, 192, 96]
+val_size :  [224, 288, 96]
+test_size :  [224, 288, 96]
+batch :  2
+test_batch :  2
+patience :  50
+seed :  12345
+output_folder :  
+root :  datasets/TOPCOW/processed
+data_file :  datasets/TOPCOW/processed/dataset.json
+classes :  2
+modalities :  1
+strides :  [[2, 2, 1], [2, 2, 2], [2, 2, 2]]
+img_size :  [192, 192, 96]
+in_channels :  1
+out_channels :  2
+feature_size :  48
+use_checkpoint :  True
+Number of parameters: 2624091

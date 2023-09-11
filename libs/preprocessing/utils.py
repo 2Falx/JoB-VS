@@ -1,6 +1,7 @@
 import os
 # import pdb
 import json
+from pathlib import Path
 import numpy as np
 import nibabel as nib
 from scipy.ndimage import zoom
@@ -10,15 +11,14 @@ warnings.filterwarnings("ignore")
 
 
 def preprocess(monai_id, im, args, lb=None, partition='Tr'):
+    print(f'Processing Patient: {im}')
     # =========================== Create OASIS folder ============================ #
     im = '/'.join(im.split('/')[1:])
     if lb is not None:
         lb = '/'.join(lb.split('/')[1:])
-        if not os.path.exists(os.path.join(args['path'], f'labels{partition}')):
-            os.makedirs(os.path.join(args['path'], f'labels{partition}'))
+        mk_dir(os.path.join(args['path'], f'labels{partition}'))
     
-    if not os.path.exists(os.path.join(args['path'], f'images{partition}')):
-        os.makedirs(os.path.join(args['path'], f'images{partition}'))
+    mk_dir(os.path.join(args['path'], f'images{partition}')) 
     # =========================== Load the image ============================ #
     image = nib.load(os.path.join(args['task'], im))
     voxel_size = np.asarray(image.header.get_zooms())[:3]  # Image spacing
@@ -44,8 +44,8 @@ def preprocess(monai_id, im, args, lb=None, partition='Tr'):
     # =============== Processing the labels (if we have them) =============== #
     label = None
     if lb is not None:
-        label = nib.load(os.path.join(args['task'], lb)).get_fdata()
-        label = label.astype(int)
+        label = nib.load(os.path.join(args['task'], lb)).get_fdata() # dtype=float64
+        label = label.astype(np.uint8) # dtype=uint8
 
     # ======================== Processing the images ======================== #
     # If the image has more than one modality
@@ -70,7 +70,8 @@ def preprocess(monai_id, im, args, lb=None, partition='Tr'):
         if lb is not None:
             save_image(label, os.path.join(args['path'], f'labels{partition}', monai_id),
                        args['affine'], np.uint8)
-    else:
+            
+    else: # If the image has only one modality
         image, label = cut_image(image, label, 300, axis)
         image = interpolate(image, factor, 3, split, axis)
         if lb is not None:
@@ -78,7 +79,6 @@ def preprocess(monai_id, im, args, lb=None, partition='Tr'):
         # Just in clase the interpolation made it bigger again
         image, label = cut_image(image, label, 300, axis)
         image = normalize(image, args['limits'], args['stats'], args['CT'])
-
         if lb is not None:
             save_image(label, os.path.join(args['path'], f'labels{partition}', monai_id),
                        args['affine'], np.uint8)
@@ -86,8 +86,8 @@ def preprocess(monai_id, im, args, lb=None, partition='Tr'):
         save_image(image, os.path.join(args['path'], f'images{partition}', monai_id),
                    args['affine'], im_type)
 
-    print('Patient {} processed. Original shape: {}. Final shape: {}'.format(
-        im, in_shape, image.shape[:3]))
+        
+    print(f'Patient {im} processed. Original shape: {in_shape}. Final shape: {image.shape[:3]}')
 
 
 def normalize(im, limits, stats, CT):
@@ -171,6 +171,24 @@ def save_image(data, out_path, affine, dtype):
     nib.save(new_data, out_path)
 
 
+def read_json_from_root(root):
+    with open(os.path.join(root, f'dataset.json'), 'r') as f:
+        dataset = json.load(f)
+        numTraining = len(dataset['training'])
+        numTest = len(dataset['validation'])
+        CT = dataset['modality']['0'] == 'CT'
+
+    with open(os.path.join(root, 'stats.json'), 'r') as f:
+        statistics = json.load(f)
+        low = statistics['0.5']
+        high = statistics['99.5']
+        mean = statistics['mean']
+        std = statistics['std']
+        spacing = statistics['spacing']
+
+    print(f'training {numTraining}, testing {numTest}')
+    return dataset, [low, high], [mean, std], spacing, CT
+
 def read_json(task, root):
     # ! Modified to read annotations in OASIS format. [N. Valderrama ~ May 17th]
     with open(os.path.join(root, f'data_{task}.json'), 'r') as f:
@@ -211,3 +229,6 @@ def cases_list(dataset, path, folder, set, remake=False):
 
         missing.append(i)
     return missing
+
+def mk_dir(path):
+    Path(path).mkdir(parents=True, exist_ok=True)

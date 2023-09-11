@@ -1,0 +1,468 @@
+{
+    "description": "TOPCOW Dataset - 3D TOF MRA images of the Circle of Willis",
+    "labels": {
+        "0": "background",
+        "1": "vessels"
+    },
+    "modality": {
+        "0": "tof"
+    },
+    "name": "TOPCOW Dataset",
+    "root": "/data/falcetta/Job-VS-TOPCOW/ORIGINAL/",
+    "training": [
+        {
+            "image": "train/001_ToF.nii.gz",
+            "label": "train/001_vessel_mask.nii.gz",
+            "monai_name": "train_001.nii.gz"
+        },
+        {
+            "image": "train/002_ToF.nii.gz",
+            "label": "train/002_vessel_mask.nii.gz",
+            "monai_name": "train_002.nii.gz"
+        },
+        {
+            "image": "train/003_ToF.nii.gz",
+            "label": "train/003_vessel_mask.nii.gz",
+            "monai_name": "train_003.nii.gz"
+        },
+        {
+            "image": "train/008_ToF.nii.gz",
+            "label": "train/008_vessel_mask.nii.gz",
+            "monai_name": "train_008.nii.gz"
+        },
+        {
+            "image": "train/009_ToF.nii.gz",
+            "label": "train/009_vessel_mask.nii.gz",
+            "monai_name": "train_009.nii.gz"
+        },
+        {
+            "image": "train/012_ToF.nii.gz",
+            "label": "train/012_vessel_mask.nii.gz",
+            "monai_name": "train_012.nii.gz"
+        },
+        {
+            "image": "train/013_ToF.nii.gz",
+            "label": "train/013_vessel_mask.nii.gz",
+            "monai_name": "train_013.nii.gz"
+        },
+        {
+            "image": "train/015_ToF.nii.gz",
+            "label": "train/015_vessel_mask.nii.gz",
+            "monai_name": "train_015.nii.gz"
+        },
+        {
+            "image": "train/017_ToF.nii.gz",
+            "label": "train/017_vessel_mask.nii.gz",
+            "monai_name": "train_017.nii.gz"
+        },
+        {
+            "image": "train/019_ToF.nii.gz",
+            "label": "train/019_vessel_mask.nii.gz",
+            "monai_name": "train_019.nii.gz"
+        },
+        {
+            "image": "train/022_ToF.nii.gz",
+            "label": "train/022_vessel_mask.nii.gz",
+            "monai_name": "train_022.nii.gz"
+        },
+        {
+            "image": "train/025_ToF.nii.gz",
+            "label": "train/025_vessel_mask.nii.gz",
+            "monai_name": "train_025.nii.gz"
+        },
+        {
+            "image": "train/027_ToF.nii.gz",
+            "label": "train/027_vessel_mask.nii.gz",
+            "monai_name": "train_027.nii.gz"
+        },
+        {
+            "image": "train/028_ToF.nii.gz",
+            "label": "train/028_vessel_mask.nii.gz",
+            "monai_name": "train_028.nii.gz"
+        },
+        {
+            "image": "train/029_ToF.nii.gz",
+            "label": "train/029_vessel_mask.nii.gz",
+            "monai_name": "train_029.nii.gz"
+        },
+        {
+            "image": "train/030_ToF.nii.gz",
+            "label": "train/030_vessel_mask.nii.gz",
+            "monai_name": "train_030.nii.gz"
+        },
+        {
+            "image": "train/031_ToF.nii.gz",
+            "label": "train/031_vessel_mask.nii.gz",
+            "monai_name": "train_031.nii.gz"
+        },
+        {
+            "image": "train/032_ToF.nii.gz",
+            "label": "train/032_vessel_mask.nii.gz",
+            "monai_name": "train_032.nii.gz"
+        },
+        {
+            "image": "train/034_ToF.nii.gz",
+            "label": "train/034_vessel_mask.nii.gz",
+            "monai_name": "train_034.nii.gz"
+        },
+        {
+            "image": "train/035_ToF.nii.gz",
+            "label": "train/035_vessel_mask.nii.gz",
+            "monai_name": "train_035.nii.gz"
+        },
+        {
+            "image": "train/037_ToF.nii.gz",
+            "label": "train/037_vessel_mask.nii.gz",
+            "monai_name": "train_037.nii.gz"
+        },
+        {
+            "image": "train/038_ToF.nii.gz",
+            "label": "train/038_vessel_mask.nii.gz",
+            "monai_name": "train_038.nii.gz"
+        },
+        {
+            "image": "train/040_ToF.nii.gz",
+            "label": "train/040_vessel_mask.nii.gz",
+            "monai_name": "train_040.nii.gz"
+        },
+        {
+            "image": "train/041_ToF.nii.gz",
+            "label": "train/041_vessel_mask.nii.gz",
+            "monai_name": "train_041.nii.gz"
+        },
+        {
+            "image": "train/045_ToF.nii.gz",
+            "label": "train/045_vessel_mask.nii.gz",
+            "monai_name": "train_045.nii.gz"
+        },
+        {
+            "image": "train/046_ToF.nii.gz",
+            "label": "train/046_vessel_mask.nii.gz",
+            "monai_name": "train_046.nii.gz"
+        },
+        {
+            "image": "train/047_ToF.nii.gz",
+            "label": "train/047_vessel_mask.nii.gz",
+            "monai_name": "train_047.nii.gz"
+        },
+        {
+            "image": "train/049_ToF.nii.gz",
+            "label": "train/049_vessel_mask.nii.gz",
+            "monai_name": "train_049.nii.gz"
+        },
+        {
+            "image": "train/050_ToF.nii.gz",
+            "label": "train/050_vessel_mask.nii.gz",
+            "monai_name": "train_050.nii.gz"
+        },
+        {
+            "image": "train/051_ToF.nii.gz",
+            "label": "train/051_vessel_mask.nii.gz",
+            "monai_name": "train_051.nii.gz"
+        },
+        {
+            "image": "train/052_ToF.nii.gz",
+            "label": "train/052_vessel_mask.nii.gz",
+            "monai_name": "train_052.nii.gz"
+        },
+        {
+            "image": "train/053_ToF.nii.gz",
+            "label": "train/053_vessel_mask.nii.gz",
+            "monai_name": "train_053.nii.gz"
+        },
+        {
+            "image": "train/054_ToF.nii.gz",
+            "label": "train/054_vessel_mask.nii.gz",
+            "monai_name": "train_054.nii.gz"
+        },
+        {
+            "image": "train/055_ToF.nii.gz",
+            "label": "train/055_vessel_mask.nii.gz",
+            "monai_name": "train_055.nii.gz"
+        },
+        {
+            "image": "train/056_ToF.nii.gz",
+            "label": "train/056_vessel_mask.nii.gz",
+            "monai_name": "train_056.nii.gz"
+        },
+        {
+            "image": "train/059_ToF.nii.gz",
+            "label": "train/059_vessel_mask.nii.gz",
+            "monai_name": "train_059.nii.gz"
+        },
+        {
+            "image": "train/060_ToF.nii.gz",
+            "label": "train/060_vessel_mask.nii.gz",
+            "monai_name": "train_060.nii.gz"
+        },
+        {
+            "image": "train/061_ToF.nii.gz",
+            "label": "train/061_vessel_mask.nii.gz",
+            "monai_name": "train_061.nii.gz"
+        },
+        {
+            "image": "train/062_ToF.nii.gz",
+            "label": "train/062_vessel_mask.nii.gz",
+            "monai_name": "train_062.nii.gz"
+        },
+        {
+            "image": "train/063_ToF.nii.gz",
+            "label": "train/063_vessel_mask.nii.gz",
+            "monai_name": "train_063.nii.gz"
+        },
+        {
+            "image": "train/064_ToF.nii.gz",
+            "label": "train/064_vessel_mask.nii.gz",
+            "monai_name": "train_064.nii.gz"
+        },
+        {
+            "image": "train/065_ToF.nii.gz",
+            "label": "train/065_vessel_mask.nii.gz",
+            "monai_name": "train_065.nii.gz"
+        },
+        {
+            "image": "train/066_ToF.nii.gz",
+            "label": "train/066_vessel_mask.nii.gz",
+            "monai_name": "train_066.nii.gz"
+        },
+        {
+            "image": "train/067_ToF.nii.gz",
+            "label": "train/067_vessel_mask.nii.gz",
+            "monai_name": "train_067.nii.gz"
+        },
+        {
+            "image": "train/068_ToF.nii.gz",
+            "label": "train/068_vessel_mask.nii.gz",
+            "monai_name": "train_068.nii.gz"
+        },
+        {
+            "image": "train/070_ToF.nii.gz",
+            "label": "train/070_vessel_mask.nii.gz",
+            "monai_name": "train_070.nii.gz"
+        },
+        {
+            "image": "train/071_ToF.nii.gz",
+            "label": "train/071_vessel_mask.nii.gz",
+            "monai_name": "train_071.nii.gz"
+        },
+        {
+            "image": "train/072_ToF.nii.gz",
+            "label": "train/072_vessel_mask.nii.gz",
+            "monai_name": "train_072.nii.gz"
+        },
+        {
+            "image": "train/073_ToF.nii.gz",
+            "label": "train/073_vessel_mask.nii.gz",
+            "monai_name": "train_073.nii.gz"
+        },
+        {
+            "image": "train/074_ToF.nii.gz",
+            "label": "train/074_vessel_mask.nii.gz",
+            "monai_name": "train_074.nii.gz"
+        },
+        {
+            "image": "train/075_ToF.nii.gz",
+            "label": "train/075_vessel_mask.nii.gz",
+            "monai_name": "train_075.nii.gz"
+        },
+        {
+            "image": "train/077_ToF.nii.gz",
+            "label": "train/077_vessel_mask.nii.gz",
+            "monai_name": "train_077.nii.gz"
+        },
+        {
+            "image": "train/078_ToF.nii.gz",
+            "label": "train/078_vessel_mask.nii.gz",
+            "monai_name": "train_078.nii.gz"
+        },
+        {
+            "image": "train/079_ToF.nii.gz",
+            "label": "train/079_vessel_mask.nii.gz",
+            "monai_name": "train_079.nii.gz"
+        },
+        {
+            "image": "train/080_ToF.nii.gz",
+            "label": "train/080_vessel_mask.nii.gz",
+            "monai_name": "train_080.nii.gz"
+        },
+        {
+            "image": "train/081_ToF.nii.gz",
+            "label": "train/081_vessel_mask.nii.gz",
+            "monai_name": "train_081.nii.gz"
+        },
+        {
+            "image": "train/082_ToF.nii.gz",
+            "label": "train/082_vessel_mask.nii.gz",
+            "monai_name": "train_082.nii.gz"
+        },
+        {
+            "image": "train/083_ToF.nii.gz",
+            "label": "train/083_vessel_mask.nii.gz",
+            "monai_name": "train_083.nii.gz"
+        },
+        {
+            "image": "train/084_ToF.nii.gz",
+            "label": "train/084_vessel_mask.nii.gz",
+            "monai_name": "train_084.nii.gz"
+        },
+        {
+            "image": "train/085_ToF.nii.gz",
+            "label": "train/085_vessel_mask.nii.gz",
+            "monai_name": "train_085.nii.gz"
+        },
+        {
+            "image": "train/086_ToF.nii.gz",
+            "label": "train/086_vessel_mask.nii.gz",
+            "monai_name": "train_086.nii.gz"
+        },
+        {
+            "image": "train/087_ToF.nii.gz",
+            "label": "train/087_vessel_mask.nii.gz",
+            "monai_name": "train_087.nii.gz"
+        },
+        {
+            "image": "train/088_ToF.nii.gz",
+            "label": "train/088_vessel_mask.nii.gz",
+            "monai_name": "train_088.nii.gz"
+        },
+        {
+            "image": "train/089_ToF.nii.gz",
+            "label": "train/089_vessel_mask.nii.gz",
+            "monai_name": "train_089.nii.gz"
+        }
+    ],
+    "validation": [
+        {
+            "image": "train/020_ToF.nii.gz",
+            "label": "train/020_vessel_mask.nii.gz",
+            "monai_name": "train_020.nii.gz"
+        },
+        {
+            "image": "train/005_ToF.nii.gz",
+            "label": "train/005_vessel_mask.nii.gz",
+            "monai_name": "train_005.nii.gz"
+        },
+        {
+            "image": "train/048_ToF.nii.gz",
+            "label": "train/048_vessel_mask.nii.gz",
+            "monai_name": "train_048.nii.gz"
+        },
+        {
+            "image": "train/042_ToF.nii.gz",
+            "label": "train/042_vessel_mask.nii.gz",
+            "monai_name": "train_042.nii.gz"
+        },
+        {
+            "image": "train/039_ToF.nii.gz",
+            "label": "train/039_vessel_mask.nii.gz",
+            "monai_name": "train_039.nii.gz"
+        },
+        {
+            "image": "train/026_ToF.nii.gz",
+            "label": "train/026_vessel_mask.nii.gz",
+            "monai_name": "train_026.nii.gz"
+        },
+        {
+            "image": "train/021_ToF.nii.gz",
+            "label": "train/021_vessel_mask.nii.gz",
+            "monai_name": "train_021.nii.gz"
+        },
+        {
+            "image": "train/090_ToF.nii.gz",
+            "label": "train/090_vessel_mask.nii.gz",
+            "monai_name": "train_090.nii.gz"
+        },
+        {
+            "image": "train/018_ToF.nii.gz",
+            "label": "train/018_vessel_mask.nii.gz",
+            "monai_name": "train_018.nii.gz"
+        },
+        {
+            "image": "train/076_ToF.nii.gz",
+            "label": "train/076_vessel_mask.nii.gz",
+            "monai_name": "train_076.nii.gz"
+        },
+        {
+            "image": "train/007_ToF.nii.gz",
+            "label": "train/007_vessel_mask.nii.gz",
+            "monai_name": "train_007.nii.gz"
+        },
+        {
+            "image": "train/006_ToF.nii.gz",
+            "label": "train/006_vessel_mask.nii.gz",
+            "monai_name": "train_006.nii.gz"
+        },
+        {
+            "image": "train/024_ToF.nii.gz",
+            "label": "train/024_vessel_mask.nii.gz",
+            "monai_name": "train_024.nii.gz"
+        }
+    ],
+    "test": [
+        {
+            "image": "test/004_ToF.nii.gz",
+            "label": "test/004_vessel_mask.nii.gz",
+            "monai_name": "test_004.nii.gz"
+        },
+        {
+            "image": "test/010_ToF.nii.gz",
+            "label": "test/010_vessel_mask.nii.gz",
+            "monai_name": "test_010.nii.gz"
+        },
+        {
+            "image": "test/011_ToF.nii.gz",
+            "label": "test/011_vessel_mask.nii.gz",
+            "monai_name": "test_011.nii.gz"
+        },
+        {
+            "image": "test/014_ToF.nii.gz",
+            "label": "test/014_vessel_mask.nii.gz",
+            "monai_name": "test_014.nii.gz"
+        },
+        {
+            "image": "test/016_ToF.nii.gz",
+            "label": "test/016_vessel_mask.nii.gz",
+            "monai_name": "test_016.nii.gz"
+        },
+        {
+            "image": "test/023_ToF.nii.gz",
+            "label": "test/023_vessel_mask.nii.gz",
+            "monai_name": "test_023.nii.gz"
+        },
+        {
+            "image": "test/033_ToF.nii.gz",
+            "label": "test/033_vessel_mask.nii.gz",
+            "monai_name": "test_033.nii.gz"
+        },
+        {
+            "image": "test/036_ToF.nii.gz",
+            "label": "test/036_vessel_mask.nii.gz",
+            "monai_name": "test_036.nii.gz"
+        },
+        {
+            "image": "test/043_ToF.nii.gz",
+            "label": "test/043_vessel_mask.nii.gz",
+            "monai_name": "test_043.nii.gz"
+        },
+        {
+            "image": "test/044_ToF.nii.gz",
+            "label": "test/044_vessel_mask.nii.gz",
+            "monai_name": "test_044.nii.gz"
+        },
+        {
+            "image": "test/057_ToF.nii.gz",
+            "label": "test/057_vessel_mask.nii.gz",
+            "monai_name": "test_057.nii.gz"
+        },
+        {
+            "image": "test/058_ToF.nii.gz",
+            "label": "test/058_vessel_mask.nii.gz",
+            "monai_name": "test_058.nii.gz"
+        },
+        {
+            "image": "test/069_ToF.nii.gz",
+            "label": "test/069_vessel_mask.nii.gz",
+            "monai_name": "test_069.nii.gz"
+        }
+    ]
+}

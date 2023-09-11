@@ -1,0 +1,514 @@
+ROG(
+  (ROG): Network(
+    (stem): ModuleList(
+      (0): Sequential(
+        (0): SeparableConv3d(
+          (conv): Conv3d(1, 1, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), bias=False)
+          (pointwise): Conv3d(1, 32, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+        )
+        (1): Norm_layer(
+          (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+        )
+        (2): swish()
+        (3): SeparableConv3d(
+          (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(2, 2, 1), padding=(1, 1, 1), groups=32, bias=False)
+          (pointwise): Conv3d(32, 32, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+        )
+        (4): Norm_layer(
+          (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+        )
+        (5): swish()
+      )
+      (1): Sequential(
+        (0): SeparableConv3d(
+          (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=32, bias=False)
+          (pointwise): Conv3d(32, 32, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+        )
+        (1): Norm_layer(
+          (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+        )
+        (2): swish()
+        (3): SeparableConv3d(
+          (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(2, 2, 2), padding=(1, 1, 1), groups=32, bias=False)
+          (pointwise): Conv3d(32, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+        )
+        (4): Norm_layer(
+          (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+        )
+      )
+    )
+    (backbone): ModuleList(
+      (0): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(64, 128, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (1): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 256, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (2): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(64, 128, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+          (1): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(256, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(256, 512, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (3): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 256, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+          (1): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(512, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(512, 512, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=512, bias=False)
+                (pointwise): Conv3d(512, 512, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(512, 512, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=512, bias=False)
+                (pointwise): Conv3d(512, 512, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (4): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(64, 128, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+          (1): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(256, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(256, 512, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (5): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 256, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+          (1): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(512, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(512, 512, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=512, bias=False)
+                (pointwise): Conv3d(512, 512, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(512, 512, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=512, bias=False)
+                (pointwise): Conv3d(512, 512, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (6): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (down): Sequential(
+              (0): swish()
+              (1): Conv3d(64, 128, kernel_size=(1, 1, 1), stride=(2, 2, 2), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+          (1): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(256, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(256, 256, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=256, bias=False)
+                (pointwise): Conv3d(256, 256, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (7): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(128, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=128, bias=False)
+                (pointwise): Conv3d(128, 128, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+      (8): Layer(
+        (cells): ModuleList(
+          (0): Cell(
+            (up): Sequential(
+              (0): swish()
+              (1): Conv3d(64, 32, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+            (core): Sequential(
+              (0): swish()
+              (1): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (2): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+              (3): swish()
+              (4): SeparableConv3d(
+                (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=64, bias=False)
+                (pointwise): Conv3d(64, 64, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+              )
+              (5): Norm_layer(
+                (norm): InstanceNorm3d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+              )
+            )
+          )
+        )
+      )
+    )
+    (combination): Sequential(
+      (0): swish()
+      (1): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), bias=False)
+      (2): Norm_layer(
+        (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+      )
+    )
+    (combination_brain): Sequential(
+      (0): swish()
+      (1): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), bias=False)
+      (2): Norm_layer(
+        (norm): InstanceNorm3d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+      )
+    )
+    (final): Sequential(
+      (0): swish()
+      (1): Conv3d(32, 2, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+    )
+    (final_brain): Sequential(
+      (0): swish()
+      (1): Conv3d(32, 2, kernel_size=(1, 1, 1), stride=(1, 1, 1), bias=False)
+    )
+  )
+)

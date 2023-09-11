@@ -8,10 +8,18 @@ import torch.nn as nn
 # batch sizes used for training the network
 precalculated_batch = {'0': 1} # [192, 192, 96]
 
+def adjust_to_divisible_by_32(vector):
+    print('adjust_to_divisible_by_32')
+    adjusted_vector = []
+    for value in vector:
+        adjusted_value = (value // 32) * 32  # Round down to the nearest multiple of 32
+        adjusted_vector.append(adjusted_value)
+    return adjusted_vector
 
-def plan_experiment(task, batch, patience, fold, rank, model_name, root, ver):
-    root = os.path.join(root, ver)
-    with open(os.path.join(root, f'fold{fold}', 'dataset_stats.json'), 'r') as f:
+def plan_experiment(task, batch, patience, rank, model_name, root):
+    root = os.path.join(root)
+    
+    with open(os.path.join(root, 'stats.json'), 'r') as f:
         dataset = json.load(f)
         mean_size = dataset['mean_size']
         small_size = dataset['small_size']
@@ -25,29 +33,44 @@ def plan_experiment(task, batch, patience, fold, rank, model_name, root, ver):
     num_downsamples = 4 if volume < threshold else 5
 
     # Analysis per axis
-    tr_size, val_size, p_size, strides, size_last = calculate_sizes(
-        num_downsamples, mean_size, small_size)
+    tr_size, val_size, p_size, strides, size_last = calculate_sizes(num_downsamples, mean_size, small_size)
+    
+        
+    print('tr_size: ', tr_size)
+    print('val_size: ', val_size)
+    print('p_size: ', p_size)
 
     # MEMORY CONSTRAINT 1
     # If the feature maps in the final stage are too big we make sure to use
     # five downsamples
     if size_last >= (12 * 12 * 6):
-        tr_size, val_size, p_size, strides, size_last = calculate_sizes(
-            5, mean_size, small_size)
+        print('--- Five downsamples ---')
+        tr_size, val_size, p_size, strides, size_last = calculate_sizes(5, mean_size, small_size)
         num_downsamples = 5
+        print('tr_size: ', tr_size)
+        print('val_size: ', val_size)
+        print('p_size: ', p_size)
+        print('num_downsamples: ', num_downsamples)
 
     # MEMORY CONSTRAINT 2
     # If the feature maps in the final stage are still too big
     # we reduce the input size
     if size_last >= (12 * 12 * 4):
-        tr_size, val_size, p_size, strides, size_last = calculate_sizes(
-            num_downsamples, mean_size, small_size, 6)
+        print('--- Reducing input size ---')
+        tr_size, val_size, p_size, strides, size_last = calculate_sizes(num_downsamples, mean_size, small_size, 6)
+        print('tr_size: ', tr_size)
+        print('val_size: ', val_size)
+        print('p_size: ', p_size)
         
     feature_size = 48
 
     strides = list(map(list, zip(*strides)))
     if len(strides) == 4:
         strides.insert(0, [1, 1, 1])
+
+    tr_size = adjust_to_divisible_by_32(tr_size)
+    val_size = adjust_to_divisible_by_32(val_size)
+
 
     if rank == 0:
         print('Current task is {}, with {} modalities and {} classes'.format(
@@ -68,8 +91,8 @@ def plan_experiment(task, batch, patience, fold, rank, model_name, root, ver):
         'patience': patience,  # Make it dependent on the data?
         'seed': 12345,
         'output_folder': '',
-        'root': os.path.join(root, f'fold{fold}'),
-        'data_file': os.path.join(root, f'fold{fold}', 'dataset.json'),
+        'root': os.path.join(root),
+        'data_file': os.path.join(root, 'dataset.json'),
     }
 
     model = {
@@ -118,6 +141,7 @@ def calculate_sizes(num_downsamples, mean_size, small_size, max_pow=7):
             sz_t *= 1.5  # Max 196
         if sz_v * 1.5 < i:
             sz_v *= 1.5  # Max 196
+            
         tr_size.append(int(sz_t))
         val_size.append(np.maximum(int(i_big // 2), int(sz_v)))
         size_last *= (sz_t / (2 ** stride))
@@ -126,4 +150,5 @@ def calculate_sizes(num_downsamples, mean_size, small_size, max_pow=7):
             p_size.append(int(sz_t + 20))
         else:
             p_size.append(int(sz_t))
+            
     return tr_size, val_size, p_size, strides, size_last

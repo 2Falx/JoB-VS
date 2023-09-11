@@ -24,6 +24,7 @@ def dataset_features(root, i, labels, CT):
     # If MRI, rescale the intensity range between 0 and 1
     if not CT:
         im = (im - im.min()) / (im.max() - im.min())
+        
     label =  os.path.join(root, i['label'])
     lb = nib.load(label).get_fdata()
     # Select some pixels to calculate the statistics (1 every 10)
@@ -96,6 +97,86 @@ def Global_features(root, num_workers):
             'std': std.tolist(),
             '0.5': np.squeeze(low).tolist(),
             '99.5': np.squeeze(high).tolist()}
+        
     write_file = os.path.join(root, 'stats.json')
     with open(write_file, 'w') as outfile:
+        json.dump(statistics, outfile, indent=4)
+        
+
+def Global_features_general(json_file, num_workers=-1):
+    
+    """
+    Calculate the global features of the dataset and save them in a json file called 'stats.json'
+    
+    Args:
+        json_file: path to the json file
+        num_workers: number of workers for parallelization
+        
+    """
+    statistics = {}
+    root = os.path.dirname(json_file)
+    stats_file = os.path.join(root, 'stats.json')
+    
+    if os.path.exists(stats_file):
+        print('Stats file already exists')
+        return        
+    
+    print(f'Calculating stats of {stats_file}') 
+    
+    print(f'Loading dataset...')
+    dataset = json.load(open(json_file, 'r'))
+    
+    CT = dataset['modality']['0'] == 'CT'
+    
+    labels = len(dataset['labels'])
+    
+    features = Parallel(n_jobs=num_workers)(delayed(dataset_features)(dataset['root'], j, labels, CT) for j in dataset['training'])
+    
+    values, spacing = [list(x) for x in zip(*features)]
+    modalities = [list(x) for x in zip(*values)]
+
+    low = np.ones(len(dataset['modality']))
+    high = np.zeros(len(dataset['modality']))
+    
+    for modality in modalities:
+        cat_values = np.concatenate(modality)
+        low = np.minimum(low, np.percentile(cat_values, 0.5, axis=0))
+        high = np.maximum(high, np.percentile(cat_values, 99.5, axis=0))
+
+    mean, std, size = [], [], []
+    
+    for patient in values:
+        p_values = np.concatenate(patient)
+        
+        if len(low) > 1:
+            mask = []
+            for ch in range(len(low)):
+                mask.append(np.logical_and(p_values[:, ch] > low[ch],
+                                            p_values[:, ch] < high[ch]))
+            mask = np.stack(mask, axis=1)
+        
+        else:
+            mask = np.logical_and(p_values > low, p_values < high)
+        
+        mean.append(np.mean(p_values * mask, axis=0))
+        std.append(np.std(p_values * mask, axis=0))
+        size.append(np.sum(mask, axis=0))
+    
+    mean, std, size = np.array(mean), np.array(std), np.asarray(size)
+    mean, std = global_stats(mean, std, size)
+    spacing = np.median(np.asarray(spacing), axis=0).tolist()
+
+    info = {'low': low, 'high': high}
+    
+    statistics = {
+        'spacing': spacing,
+        'mean': mean.tolist(),
+        'std': std.tolist(),
+        '0.5': np.squeeze(low).tolist(),
+        '99.5': np.squeeze(high).tolist()}
+        
+    
+    print(f'Writing stats to {stats_file}')
+    
+    with open(stats_file, 'w') as outfile:
         json.dump(statistics, outfile, indent=4)

@@ -22,8 +22,6 @@ import torch.multiprocessing as mp
 from torch.utils.data import DataLoader
 from torch.nn.parallel import DistributedDataParallel as DDP
 
-from monai.networks.nets import UNet
-
 tasks = {'0': 'Vessel_Segmentation'}
 
 
@@ -49,26 +47,24 @@ def main(rank, world_size, args):
     if args.ft:
         args.resume = True
         
-    ver = 'mask' if args.mask else 'original'
     info, model_params = plan_experiment(
         tasks[args.task], args.batch,
-        args.patience, args.fold,
-        rank, args.model, args.data_ver ,ver)
+        args.patience,
+        rank, args.model, args.data_ver)
 
     # PATHS AND DIRS
-    args.save_path = os.path.join(
-        info['output_folder'], args.name, f'fold{args.fold}')
+    args.save_path = os.path.join(info['output_folder'], args.name)
     images_path = os.path.join(args.save_path, 'volumes')
     
     if args.ixi:
+        print('Evaluating in IXI dataset')
         images_path = os.path.join(args.save_path, 'IXI_DATASET')
     
-    images_path = os.path.join(images_path, ver)
+    images_path = os.path.join(images_path)
 
     load_path = args.save_path  # If we're resuming the training of a model
     if args.pretrained is not None:
-        load_path = os.path.join(
-            args.pretrained, f'fold{args.fold}')
+        load_path = os.path.join(args.pretrained, f'fold{args.fold}')
     
     os.makedirs(args.save_path, exist_ok=True)
     os.makedirs(images_path, exist_ok=True)
@@ -89,6 +85,9 @@ def main(rank, world_size, args):
     if args.model == 'ROG':
         model = ROG(model_params).to(rank)
     elif args.model == 'UNet':
+        
+        from monai.networks.nets import UNet
+        
         model = UNet(spatial_dims=len(model_params['img_size']),
                      in_channels=model_params['in_channels'],
                      out_channels=model_params['out_channels'],
@@ -106,11 +105,8 @@ def main(rank, world_size, args):
 
     if training or args.ft:
         # Initialize optimizer
-        optimizer = optim.Adam(
-            ddp_model.parameters(), lr=args.lr,
-            weight_decay=1e-5, amsgrad=True)
-        annealing = optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, verbose=True, patience=info['patience'], factor=0.5)
+        optimizer = optim.Adam(ddp_model.parameters(), lr=args.lr,weight_decay=1e-5, amsgrad=True)
+        annealing = optim.lr_scheduler.ReduceLROnPlateau(optimizer, verbose=True, patience=info['patience'], factor=0.5)
         # Save experiment description
         if rank == 0:
             name_d = 'description_train.txt'
@@ -122,12 +118,11 @@ def main(rank, world_size, args):
             with open(os.path.join(args.save_path, name_d), 'w') as f:
                 for key in info:
                     print(key, ': ', info[key], file=f)
+                
                 for key in model_params:
                     print(key, ': ', model_params[key], file=f)
-                print(
-                    'Number of parameters:',
-                    sum([p.data.nelement() for p in model.parameters()]),
-                    file=f)
+                
+                print('Number of parameters:',sum([p.data.nelement() for p in model.parameters()]),file=f)
 
                 with open(os.path.join(args.save_path, name_a), 'w') as f:
                     for arg in vars(args):
@@ -140,26 +135,33 @@ def main(rank, world_size, args):
     if args.load_weights is not None:
         map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
         checkpoint = torch.load(args.load_weights, map_location=map_location)
+        
         if 'state_dict' in checkpoint:
             checkpoint = checkpoint['state_dict']
+        
         if 'rng' in checkpoint.keys():
             np.random.set_state(checkpoint['rng'][0])
             torch.set_rng_state(checkpoint['rng'][1])
+        
         if 'module.' not in list(checkpoint.keys())[0]:
             checkpoint = {'module.' + k: v for k, v in checkpoint.items()}
+        
         model_dict = ddp_model.state_dict()
         # Match pre-trained weights that have same shape as current model.
+        
         pre_train_dict_match = {
             k: v
             for k, v in checkpoint.items()
             if k in model_dict and v.size() == model_dict[k].size()
         }
+        
         # Weights that do not have match from the pre-trained model.
         not_load_layers = [
             k
             for k in model_dict.keys()
             if k not in pre_train_dict_match.keys()
         ]
+        
         # Log weights that are not loaded with the pre-trained weights.
         if not_load_layers and rank==0:
             for k in not_load_layers:
@@ -171,9 +173,7 @@ def main(rank, world_size, args):
     if args.resume:
         name = args.load_model + '.pth.tar'
         map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
-        checkpoint = torch.load(
-            os.path.join(load_path, name),
-            map_location=map_location)
+        checkpoint = torch.load(os.path.join(load_path, name), map_location=map_location)
         # Only for training. Must be loaded before loading the model
         if not args.ft:
             np.random.set_state(checkpoint['rng'][0])
@@ -182,8 +182,7 @@ def main(rank, world_size, args):
         if rank == 0:
             print('Loading model epoch {}.'.format(checkpoint['epoch']))
 
-        ddp_model.load_state_dict(
-            checkpoint['state_dict'], strict=(not args.ft))
+        ddp_model.load_state_dict(checkpoint['state_dict'], strict=(not args.ft))
         # if ft, we do not need the previous optimizer
         if not args.ft:
             best_dice = checkpoint['best_dice']
@@ -193,25 +192,26 @@ def main(rank, world_size, args):
         args.load_model = 'best_dice'
 
     criterion = losses.segmentation_loss(alpha=1)
-    if args.cldice:
-        criterion_vessels = cldice.soft_dice_cldice()
-    else:
-        criterion_vessels = None
+    
+    criterion_vessels = cldice.soft_dice_cldice() if args.cldice else None
+
     metrics_v = utils.Evaluator(info['classes'])
     metrics_b = utils.Evaluator(info['classes'])
     metrics = [metrics_v, metrics_b]
 
     # DATASETS
-    train_dataset = dataloader.Medical_data(
-        True, info['data_file'], info['root'], info['p_size'])
-    val_dataset = dataloader.Medical_data(
-        True, info['data_file'], info['root'], info['val_size'], val=True)
-    test_dataset = dataloader.Medical_data(
-        False, info['data_file'], info['root'], info['val_size'], val=True)
+    train_dataset = dataloader.Medical_data(True, info['data_file'], info['root'], info['p_size'])
+ 
+    val_dataset = dataloader.Medical_data(True, info['data_file'], info['root'], info['val_size'], val=True)
+    
+    test_dataset = dataloader.Medical_data(False, info['data_file'], info['root'], info['val_size'], val=True)
 
     # SAMPLERS
-    train_sampler = torch.utils.data.distributed.DistributedSampler(
-        train_dataset, num_replicas=world_size, rank=rank)
+    train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset, num_replicas=world_size, rank=rank)
+    
+    print(f"Info in_size {info['in_size']}") # 192 192 96
+    print(f"Info val_size {info['val_size']}") # 240 292 96
+  
     train_collate = helpers.collate(info['in_size'])
     val_collate = helpers.collate_val(list(map(int, info['val_size'])))
 
@@ -219,9 +219,11 @@ def main(rank, world_size, args):
     train_loader = DataLoader(
         train_dataset, sampler=train_sampler, batch_size=info['batch'],
         num_workers=8, collate_fn=train_collate)
+    
     val_loader = DataLoader(
         val_dataset, sampler=None, batch_size=info['test_batch'],
         num_workers=8, collate_fn=val_collate)
+    
     test_loader = DataLoader(
         test_dataset, sampler=None, shuffle=False, batch_size=1, num_workers=0)
 
@@ -232,34 +234,37 @@ def main(rank, world_size, args):
     def moving_average(cum_loss, new_loss, n=5):
         if cum_loss is None:
             cum_loss = new_loss
+        
         cum_loss = np.append(cum_loss, new_loss)
         if len(cum_loss) > n:
             cum_loss = cum_loss[1:]
+        
         return cum_loss.mean()
 
     if training:
         accumulated_val_loss = None
         out_file = open(os.path.join(args.save_path, 'progress.csv'), 'a+')
-        noise_data = torch.zeros(
-            [info['batch'], model_params['modalities']] + info['in_size'],
-            device=rank)
+        noise_data = torch.zeros([info['batch'], model_params['modalities']] + info['in_size'], device=rank)
+        
         for epoch in range(epoch + 1, args.epochs + 1):
             lr = utils.get_lr(optimizer)
             if rank == 0:
-                print('--------- Starting Epoch {} --> {} ---------'.format(
-                    epoch, time.strftime("%H:%M:%S")))
+                print(f'--------- Starting Epoch {epoch} --> {time.strftime("%H:%M:%S")} ---------')
                 print('Current learning rate:', lr)
 
             train_sampler.set_epoch(epoch)
+            
             train_loss, noise_data = trainer.train(
                 args, info, ddp_model, train_loader, noise_data, optimizer,
                 criterion, scaler, rank, criterion_vessels)
+            
             val_loss, dice = trainer.val(
                 args, ddp_model, val_loader, criterion,
                 metrics, rank, criterion_vessels)
 
             accumulated_val_loss = moving_average(
                 accumulated_val_loss, val_loss)
+            
             annealing.step(accumulated_val_loss)
 
             mean = sum(dice) / len(dice)
@@ -299,13 +304,12 @@ def main(rank, world_size, args):
     torch.set_rng_state(checkpoint['rng'][1]) 
     ddp_model.load_state_dict(checkpoint['state_dict'])
     if rank == 0:
-        print('Testing epoch with best dice ({}: dice {})'.format(
-            checkpoint['epoch'], checkpoint['dice']))
+        print(f'Testing epoch with best dice ({checkpoint["epoch"]}: dice {checkpoint["dice"]})')
 
     # EVALUATE THE MODEL
-    trainer.test(
-            info, ddp_model, test_loader, images_path,
-            info['data_file'], rank, world_size)
+    trainer.test(info, ddp_model, test_loader, images_path,
+                 info['data_file'], rank, world_size)
+    
     dist.barrier()
     cleanup()
 
@@ -379,6 +383,7 @@ if __name__ == '__main__':
     os.environ['MKL_THREADING_LAYER'] = 'GNU'
 
     world_size = torch.cuda.device_count()
+    
     if world_size > 1:
         mp.spawn(main, args=(world_size, args,), nprocs=world_size, join=True)
     else:
