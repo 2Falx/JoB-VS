@@ -76,12 +76,15 @@ def extract_paired_list(dataset_complete_path, dataset_name=''):
 
 
 #main
-def main():
+def main(args):
     
     test_get_id()
     
-    dataset_path = "/data/falcetta/Job-VS-TOPCOW/ORIGINAL/"
-    json_dir = '/home/falcetta/0_PhD/JOB-VS/JoB-VS/datasets/TOPCOW'
+    dataset_path = os.path.normpath(args.dataset_path)
+    print(f"Dataset path: {dataset_path}")
+    json_dir = os.path.normpath(args.json_dir)
+    print(f"JSON directory: {json_dir}")
+    
     json_out_filepath = os.path.join(json_dir, 'dataset.json')
     Path(json_dir).mkdir(parents=True, exist_ok=True)
 
@@ -145,6 +148,13 @@ def main():
     
     Global_features_general(json_out_filepath)
 
+
+
 #main
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset_path', type=str, default='/data/falcetta/Job-VS-TOPCOW/ORIGINAL/')
+    parser.add_argument('--json_dir', type=str, default='/home/falcetta/0_PhD/JOB-VS/JoB-VS/datasets/TOPCOW')
+    args = parser.parse_args()
+    main(args)

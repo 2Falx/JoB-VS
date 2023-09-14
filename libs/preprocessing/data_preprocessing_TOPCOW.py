@@ -5,7 +5,8 @@ from global_features import Global_features_general
 from task_preprocessing import Preprocess_datasets_general
 from image_sizes import Calculate_sizes_general
 
-data_root = '/home/falcetta/0_PhD/JOB-VS/JoB-VS/datasets/TOPCOW'
+data_root = os.path.join(os.getcwd(),'datasets/TOPCOW')
+assert os.path.exists(data_root), f"{data_root} folder not found"
 json_out_filepath = os.path.join(data_root, 'dataset.json')
 
 out_directory = os.path.join(data_root, 'processed')
@@ -28,4 +29,3 @@ Preprocess_datasets_general(out_directory, data_root, remake=process_again)
 # # Calculate the dataset sizes (used to plan the experiments)
 print(f'Calculating sizes for {out_directory}')
 Calculate_sizes_general(out_directory, remake=process_again)
-

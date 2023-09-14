@@ -19,7 +19,7 @@ def adjust_to_divisible_by_32(vector):
 def plan_experiment(task, batch, patience, rank, model_name, root):
     root = os.path.join(root)
     
-    with open(os.path.join(root, 'stats.json'), 'r') as f:
+    with open(os.path.join(root, 'dataset_stats.json'), 'r') as f:
         dataset = json.load(f)
         mean_size = dataset['mean_size']
         small_size = dataset['small_size']
@@ -68,6 +68,8 @@ def plan_experiment(task, batch, patience, rank, model_name, root):
     if len(strides) == 4:
         strides.insert(0, [1, 1, 1])
 
+    print('--- Training input (before) size set to {} ---'.format(tr_size))
+    print('--- Validation input (before) size set to {} ---'.format(val_size))
     tr_size = adjust_to_divisible_by_32(tr_size)
     val_size = adjust_to_divisible_by_32(val_size)
 

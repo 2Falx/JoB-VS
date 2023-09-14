@@ -56,10 +56,6 @@ def main(rank, world_size, args):
     args.save_path = os.path.join(info['output_folder'], args.name)
     images_path = os.path.join(args.save_path, 'volumes')
     
-    if args.ixi:
-        print('Evaluating in IXI dataset')
-        images_path = os.path.join(args.save_path, 'IXI_DATASET')
-    
     images_path = os.path.join(images_path)
 
     load_path = args.save_path  # If we're resuming the training of a model
@@ -84,16 +80,6 @@ def main(rank, world_size, args):
     # CREATE THE NETWORK ARCHITECTURE
     if args.model == 'ROG':
         model = ROG(model_params).to(rank)
-    elif args.model == 'UNet':
-        
-        from monai.networks.nets import UNet
-        
-        model = UNet(spatial_dims=len(model_params['img_size']),
-                     in_channels=model_params['in_channels'],
-                     out_channels=model_params['out_channels'],
-                     channels=(4, 8, 16),
-                     strides=(2, 2)).to(rank)
-    else:
         print('Model not found')
         return
     
