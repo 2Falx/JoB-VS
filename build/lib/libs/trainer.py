@@ -50,6 +50,7 @@ def get_aux(loader, idxs, rank):
 
 def train(args, info, model, loader, noise_data, optimizer, criterion, scaler,
           rank, criterion_vessels=None):
+    print('--- Start Training ---')
     model.train()
     loader.dataset.change_epoch()
     epoch_loss = utils.AverageMeter()
@@ -61,6 +62,9 @@ def train(args, info, model, loader, noise_data, optimizer, criterion, scaler,
     
     for batch_idx, sample in enumerate(loader):
         data = sample['data'].float().to(rank)
+        
+        #print('data shape: ', data.shape)
+        #print('data dtype: ', data.dtype)
 
         # Rescale the eps! (important for Free AT)
         b_min = torch.amin(data, [2, 3, 4], keepdim=True)
@@ -130,6 +134,7 @@ def train(args, info, model, loader, noise_data, optimizer, criterion, scaler,
 
 
 def val(args, model, loader, criterion, metrics, rank, criterion_vessels=None):
+    print('--- Start Validation ---')
     model.eval()
     metrics_v, metrics_b = metrics
     metrics_v.reset()
@@ -140,6 +145,9 @@ def val(args, model, loader, criterion, metrics, rank, criterion_vessels=None):
         data = sample['data'].float().to(rank)
         target = sample['target'].squeeze_(1).long()
         brain_target = sample['brain_target'].squeeze_(1).long()
+        
+        #print('data shape: ', data.shape)
+        #print('data dtype: ', data.dtype)
 
         with torch.no_grad():
             out = model(data)

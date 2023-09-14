@@ -40,10 +40,11 @@ class Medical_data(Dataset):
     def __getitem__(self, idx):
         if self.train or self.pgd:
             patient = self.filenames.iloc[int(idx)]
-            image, label, brain_label, affine = helpers.load_image(
-                patient, self.root_dir, self.train)
+            image, label, brain_label, affine = helpers.load_image(patient, self.root_dir, self.train)
             assert label.shape == brain_label.shape
             im_shape, multimodal = helpers.image_shape(image)
+            #print(f'Image shape: {im_shape}')
+            #print(f'Patch size: {self.patch_size}')
 
             # If the image is smaller than the patch_size in any dimension, we
             # have to pad it to extract a patch
@@ -83,8 +84,7 @@ class Medical_data(Dataset):
                 brain_label = np.expand_dims(brain_label, 0)
                 info = [patient[0][11:], affine]
         else:
-            patches = helpers.extract_patch(
-                self.image, self.voxel[idx], self.patch_size)
+            patches = helpers.extract_patch(self.image, self.voxel[idx], self.patch_size)
             label = torch.Tensor(self.voxel[idx])
             brain_label = torch.Tensor(self.voxel[idx])
             # patches = helpers.test_data(patches)
