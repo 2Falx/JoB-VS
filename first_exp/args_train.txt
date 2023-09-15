@@ -14,7 +14,7 @@ ixi : False
 lr : 0.0005
 epochs : 1000
 patience : 50
-batch : 2
+batch : 1
 load_weights : None
 eps : 8.0
 alpha_vessels : 0.5
@@ -23,7 +23,7 @@ gpu : 0
 port : 5
 benchmark : True
 mask : False
-cldice : False
+cldice : True
 detection : False
 threshold : None
 save_path : first_exp

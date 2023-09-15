@@ -80,8 +80,6 @@ def main(rank, world_size, args):
     # CREATE THE NETWORK ARCHITECTURE
     if args.model == 'ROG':
         model = ROG(model_params).to(rank)
-        print('Model not found')
-        return
     
     ddp_model = DDP(model, device_ids=[rank])
     if rank == 0:
