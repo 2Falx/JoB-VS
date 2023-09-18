@@ -198,8 +198,10 @@ def test(info, model, loader, images_path, test_file, rank, world_size):
     
     for idx in range(rank, len(patients), world_size):
         shape, name, affine, pad = loader.dataset.update(idx)
+        
         prediction = torch.zeros((info['classes'],) + shape).to(rank).half()
         brain_prediction = torch.zeros((info['classes'],) + shape).to(rank).half()
+        
         weights = torch.zeros(shape).to(rank).half()
 
         for sample in loader:
@@ -212,8 +214,10 @@ def test(info, model, loader, images_path, test_file, rank, world_size):
 
             low = (sample['target'][0] - center).long()
             up = (sample['target'][0] + center).long()
+            
             prediction[:, low[0]:up[0], low[1]:up[1], low[2]:up[2]] += output[0][0]
             brain_prediction[:, low[0]:up[0], low[1]:up[1], low[2]:up[2]] += output[1][0]
+            
             weights[low[0]:up[0], low[1]:up[1], low[2]:up[2]] += w_patch
 
         # Vessels Prediction
@@ -233,20 +237,13 @@ def test(info, model, loader, images_path, test_file, rank, world_size):
             brain_prediction = padding(brain_prediction, pad, shape)
 
         # Save argmax predictions
-        helpers.save_image(
-            prediction, os.path.join(images_path, 'vessels', name), affine)
-        helpers.save_image(
-            brain_prediction, os.path.join(images_path, 'brain', name), affine)
-        helpers.save_image(
-            brain_prediction*prediction, 
-             os.path.join(images_path, 'vessels_brain', name), affine)
+        helpers.save_image(prediction, os.path.join(images_path, 'vessels', name), affine) # Save vessels prediction
+        helpers.save_image(brain_prediction, os.path.join(images_path, 'brain', name), affine) # Save brain prediction
+        helpers.save_image(brain_prediction*prediction, os.path.join(images_path, 'vessels_brain', name), affine) # Save brain prediction
         
         # Save softmax predictions
-        helpers.save_image(
-            prediction_logits.double(), os.path.join(images_path, 'vessels_logits', name), affine)
-        helpers.save_image(
-            (prediction_logits*brain_prediction).double(), 
-             os.path.join(images_path, 'vessels_brain_logits', name), affine)
+        helpers.save_image(prediction_logits.double(), os.path.join(images_path, 'vessels_logits', name), affine)
+        helpers.save_image((prediction_logits*brain_prediction).double(), os.path.join(images_path, 'vessels_brain_logits', name), affine)
         
         print('Prediction {} saved'.format(name))
 
