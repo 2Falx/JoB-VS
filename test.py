@@ -40,8 +40,6 @@ def cleanup():
 def main(rank, world_size, args):
     print(f"Running on rank {rank}.")
     setup(rank, world_size, args.port)
-
-    training = args.test
         
     info, model_params = plan_experiment(
         tasks[args.task], args.batch,
@@ -79,32 +77,7 @@ def main(rank, world_size, args):
     if rank == 0:
         f = open(os.path.join(args.save_path, 'architecture.txt'), 'w')
         print(model, file=f)
-
-    if training or args.ft:
-        # Initialize optimizer
-        optimizer = optim.Adam(ddp_model.parameters(), lr=args.lr,weight_decay=1e-5, amsgrad=True)
-        annealing = optim.lr_scheduler.ReduceLROnPlateau(optimizer, verbose=True, patience=info['patience'], factor=0.5)
-        # Save experiment description
-        if rank == 0:
-            name_d = 'description_train.txt'
-            name_a = 'args_train.txt'
-            if not training:
-                name_d = 'description_test.txt'
-                name_a = 'args_test.txt'
-
-            with open(os.path.join(args.save_path, name_d), 'w') as f:
-                for key in info:
-                    print(key, ': ', info[key], file=f)
-                
-                for key in model_params:
-                    print(key, ': ', model_params[key], file=f)
-                
-                print('Number of parameters:',sum([p.data.nelement() for p in model.parameters()]),file=f)
-
-                with open(os.path.join(args.save_path, name_a), 'w') as f:
-                    for arg in vars(args):
-                        print(arg, ':', getattr(args, arg), file=f)
-
+        
     # CHECKPOINT
     if args.load_weights is not None:
         map_location = {'cuda:%d' % 0: 'cuda:%d' % rank}
